@@ -1,0 +1,20 @@
+actions:
+  - name: login
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/users/login"
+      forward_client_headers: true
+  - name: register
+    definition:
+      kind: synchronous
+      handler: "{{ACTION_BASE_URL}}/users/register"
+      forward_client_headers: true
+custom_types:
+  enums: []
+  input_objects:
+    - name: LoginInput
+    - name: RegisterInput
+  objects:
+    - name: LoginOutput
+    - name: RegisterOutput
+  scalars: []

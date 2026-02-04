@@ -1,0 +1,32 @@
+type Mutation {
+  login(objects: LoginInput!): LoginOutput
+  register(name: String!, email: String!, password: String!): RegisterOutput
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginOutput {
+  metadata: String!
+  token: String
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+type RegisterOutput {
+  success: Boolean
+  message: String
+  user_id: uuid
+  user_name: String
+  user_email: String
+  user_created_at: String
+}
+
+# Note: Do not add Query fields here — actions are defined as Mutation entries and
+# the SDL should only declare action types and mutation fields. No Query placeholder.

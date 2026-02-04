@@ -1,0 +1,40 @@
+version: '3.6'
+services:
+  recipie_express:
+    network_mode: host
+    container_name: recipie_express
+    build:
+      dockerfile: express.dockerfile
+      context: .
+      args:
+        EXPRESS_PORT: ${EXPRESS_PORT}
+    volumes:
+      - ${LOCAL_UPLOADED_PATH}:/home/feven/Documents
+    restart: always
+    environment:
+      - EXPRESS_PORT=${EXPRESS_PORT}
+      - HASURA_GRAPHQL_URL=${HASURA_GRAPHQL_URL}
+      - HASURA_GRAPHQL_ADMIN_SECRET=${HASURA_GRAPHQL_ADMIN_SECRET}
+      - NODE_ENV=${NODE_ENV:-development}
+
+
+  recipie_graphql_engine:
+    container_name: recipie_graphql_engine
+    network_mode: host
+    image: hasura/graphql-engine:v1.3.3
+    restart: always
+    depends_on:
+      - "recipie_express"
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: ${POSTGRES_URI}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_CORS_DOMAIN: "*"
+      # HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
+      HASURA_GRAPHQL_SERVER_PORT: ${HASURA_GRAPHQL_SERVER_PORT}
+      # HASURA_ACTION_SECRET: ${HASURA_ACTION_SECRET}
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      ACTION_BASE_URL: http://localhost:${EXPRESS_PORT}
+

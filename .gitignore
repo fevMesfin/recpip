@@ -1,0 +1,31 @@
+# Node modules - CRITICAL!
+node_modules/
+yarn.lock
+
+# Environment files - SECURITY!
+.env
+.env.local
+*.env
+
+# Log files (from your structure)
+*.log
+*.pid
+dev.log
+dev.err
+server.log
+hasura-console.log
+
+# Nuxt build output
+.nuxt/
+nuxt.pid
+
+# Runtime files
+.DS_Store
+Thumbs.db
+
+# Docker (if any temporary files)
+*.dockerfile
+# Backups
+*-backup/
+backend-backup/
+frontend-backup/

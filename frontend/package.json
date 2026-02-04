@@ -1,0 +1,34 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "My riveting Nuxt.js project",
+  "author": "feven-mesfin",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "@nuxtjs/apollo": "^4.0.1-rc.1",
+    "@nuxtjs/axios": "^5.13.6",
+    "apollo-boost": "^0.4.9",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-link": "1.2.14",
+    "apollo-link-context": "^1.0.20",
+    "apollo-link-http": "^1.5.17",
+    "graphql": "^15.8.0",
+    "graphql-tag": "^2.12.6",
+    "nuxt": "^2.17.0",
+    "vee-validate": "3.4.14",
+    "vue-apollo": "^3.1.2",
+    "vue-notification": "^1.3.20",
+    "vuex": "3.6.2"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.12.3",
+    "tslib": "2.6.2"
+  }
+}

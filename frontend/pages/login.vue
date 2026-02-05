@@ -248,7 +248,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #f5f7fa;
+  /* Match recipes page background */
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -272,7 +273,8 @@ export default {
 .logo {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  /* use recipes primary red accents to match theme */
+  background: linear-gradient(135deg, #FF6B6B, #e85a5a);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -285,7 +287,7 @@ export default {
 }
 
 .app-name {
-  color: #1976d2;
+  color: #FF6B6B; /* match Vuetify primary */
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 8px;
@@ -300,6 +302,13 @@ export default {
 .description {
   color: #666;
   font-size: 16px;
+}
+
+/* Make primary buttons match recipes primary color */
+.login-card .v-btn--is-elevated.v-btn--large,
+.login-card .v-btn.primary {
+  background-color: #FF6B6B !important;
+  color: white !important;
 }
 
 /* Responsive */

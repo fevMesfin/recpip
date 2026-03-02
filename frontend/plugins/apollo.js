@@ -3,9 +3,8 @@ import VueApollo from 'vue-apollo'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { HttpLink } from 'apollo-link-http'
-// Remove this: import { from } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
-import gql from 'graphql-tag'
+import gql from 'graphql-tag'   
 
 console.log('🚀 Apollo plugin starting...')
 
@@ -37,9 +36,7 @@ export default function (context, inject) {
       authHeaders['x-hasura-admin-secret'] = secret
     }
 
-    // DEV-FRIENDLY: always include admin secret when available so mutations
-    // work during local development even when the client sends a JWT.
-    // Remove this in production for security.
+  
     if (secret) {
       authHeaders['x-hasura-admin-secret'] = secret
     }
@@ -53,7 +50,7 @@ export default function (context, inject) {
   })
 
   const apolloClient = new ApolloClient({
-    link: authLink.concat(httpLink), // Changed: removed from()
+    link: authLink.concat(httpLink), 
     cache: new InMemoryCache(),
     connectToDevTools: true
   })
@@ -64,13 +61,11 @@ export default function (context, inject) {
 
   context.app.apolloProvider = apolloProvider
   inject('apollo', apolloProvider)
-  //inject('apolloProvider', apolloProvider)
-  // Vue.prototype.$apolloProvider = apolloProvider
-  // Vue.prototype.$apolloClient = apolloClient
+
 
   console.log('✅ Apollo injected')
 
-  // Test connection
+
   setTimeout(async () => {
     try {
       console.log('🔍 Testing Hasura connection...', uri)

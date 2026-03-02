@@ -1,50 +1,17 @@
-// require("dotenv").config();
 
-// const express = require("express");
 
-// const body_parser = require("body-parser");
-
-// const morgan = require("morgan");
-// const cors = require("cors");
-
-// // const jwt = require("./middleware/jwt");
-
-// const app = express();
-
-// app.use(morgan("combined"));
-// app.use(
-//     cors({
-//         origin: "*",
-//     })
-// );
-// const port = process.env.EXPRESS_PORT;
-
-// app.use(body_parser.json({ limit: "100mb" }));
-
-// app.post("/users/login", require("./express/login"));
-
-// app.listen(port, () => {
-//   console.log(`Express server listening on ${port}`);
-// });
-
-// --- Active server below (keeps the original commented lines above intact) ---
-
-require("dotenv").config();
+require("dotenv").config(); //Makes JWT_SECRET,PORT etc. available from env.
 const express = require("express");
-const body_parser = require("body-parser");
-const morgan = require("morgan");
-const cors = require("cors");
+const body_parser = require("body-parser");  // request translator
+const morgan = require("morgan"); //Logs every request
+const cors = require("cors"); //Controls which websites can talk to your API like//localhost:3000 (frontend) to call http://localhost:8053 (backend)
 
 const app = express();
 
 app.use(morgan("combined"));
-// Configure CORS. Use a reflected origin to avoid strict string mismatches
-// (e.g. trailing slash differences) during local development. For
-// production you should restrict this to an explicit origin string or
-// validate the origin in a custom function.
+
 app.use(
 	cors({
-		// reflect the request origin in the Access-Control-Allow-Origin header
 		origin: true,
 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 		allowedHeaders: [
@@ -70,23 +37,21 @@ app.use((err, req, res, next) => {
 	return next(err);
 });
 
-// Compute Hasura endpoint once and make available to handlers via app.locals
 const hasuraEndpoint = process.env.HASURA_GRAPHQL_ENDPOINT || process.env.HASURA_ENDPOINT || process.env.HASURA_GRAPHQL_URL || process.env.HASURA_URL || null;
 app.locals.HASURA_GRAPHQL_ENDPOINT = hasuraEndpoint;
 
-// Mount the login/register handlers implemented in express/
 app.post("/users/login", require("./express/login"));
 app.post("/users/register", require("./express/register"));
 
 app.get("/", (req, res) => res.json({ ok: true, env: process.env.NODE_ENV || "development" }));
 
-// Basic error handler for async handlers
+
 app.use((err, req, res, next) => {
 	console.error("Unhandled error in request:", err && err.stack ? err.stack : err);
 	if (!res.headersSent) res.status(500).json({ error: "Internal server error" });
 });
 
-// Start server and attach error handlers
+
 const server = app.listen(port, () => {
 	const addr = server.address() || { address: '0.0.0.0', port };
 	const host = addr.address === '::' || addr.address === '0.0.0.0' ? 'localhost' : addr.address;
@@ -117,14 +82,14 @@ process.on("uncaughtException", (err) => {
 	process.exit(1);
 });
 
-// Graceful shutdown on SIGINT/SIGTERM
+// shutdown on SIGINT/SIGTERM
 function shutdown(signal) {
 	console.log(`Received ${signal}. Shutting down gracefully...`);
 	server.close(() => {
 		console.log('Server closed. Exiting.');
 		process.exit(0);
 	});
-	// Force exit after 5s
+	
 	setTimeout(() => {
 		console.error('Forcing shutdown after timeout.');
 		process.exit(1);

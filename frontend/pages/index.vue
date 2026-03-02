@@ -1,8 +1,6 @@
 <template>
   <div class="signup-container">
-    <!-- Signup Card -->
-    <div class="signup-card">
-      <!-- Header -->
+\    <div class="signup-card">
       <div class="header">
         <div class="logo">
           <v-icon size="48" color="primary">mdi-chef-hat</v-icon>
@@ -12,7 +10,6 @@
         <p class="description">Join to save and share recipes</p>
       </div>
 
-      <!-- Error Message -->
       <v-alert
         v-if="message"
         :type="messageType"
@@ -26,9 +23,11 @@
           <span>{{ message }}</span>
         </div>
       </v-alert>
+      <v-form
+       ref="form"
+        v-model="valid"
+         @submit.prevent="handleSignup">
 
-      <v-form ref="form" v-model="valid" @submit.prevent="handleSignup">
-        <!-- Name -->
         <v-text-field
           v-model="name"
           label="Full Name"
@@ -51,7 +50,6 @@
           class="mb-4"
         />
 
-        <!-- Password -->
         <v-text-field
           v-model="password"
           label="Password"
@@ -65,7 +63,6 @@
           class="mb-6"
         />
 
-        <!-- Button -->
         <v-btn
           type="submit"
           color="primary"
@@ -77,7 +74,6 @@
           <span class="font-weight-bold">Sign Up</span>
         </v-btn>
 
-        <!-- Go to login -->
         <div class="text-center mt-6">
           <span class="text-body-2 text--secondary">
             Already have an account?
@@ -97,7 +93,6 @@ import gql from 'graphql-tag'
 export default {
   name: 'SignupPage',
   layout: 'empty',
-
   data() {
     return {
       valid: false,
@@ -123,16 +118,16 @@ export default {
       ],
     }
   },
-
+//Runs when page loads
   mounted() {
     console.log('Signup page loaded')
-    // Clear any existing auth data
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     localStorage.removeItem('user_id')
   },
 
   methods: {
+    //VALIDATION  
     async handleSignup() {
       if (!this.$refs.form.validate()) return
 
@@ -145,19 +140,21 @@ export default {
         console.log('Email:', this.email)
         console.log('Password length:', this.password.length)
         
-        // Use GraphQL mutation with Hasura Actions
         const response = await this.$apollo.mutate({
           mutation: gql`
             mutation RegisterUser(
+              // what mutaion need
               $name: String!
               $email: String!
               $password: String!
             ) {
-              register(
+              register( //call hasura action 
+              //what backend expects
                 name: $name
                 email: $email
                 password: $password
               ) {
+                //Specifies exactly what data you want back from the mutation
                     success
                     message
                     user_id
@@ -181,12 +178,10 @@ export default {
           this.message = '✅ Account created successfully! Redirecting to login...'
           this.messageType = 'success'
           
-          // Store user data temporarily (optional, for auto-login)
           if (data.user_id) {
             localStorage.setItem('user_id', data.user_id)
             console.log('✅ User ID stored:', data.user_id)
           }
-          // Build a user object from flat fields if present
           if (data.user_name || data.user_email) {
             const userObj = {
               id: data.user_id || null,
@@ -198,23 +193,19 @@ export default {
             console.log('✅ User data stored:', userObj)
           }
           
-          // Clear form
           this.name = ''
           this.email = ''
           this.password = ''
           
-          // Reset form validation
           if (this.$refs.form) {
             this.$refs.form.resetValidation()
           }
           
-          // Wait 2 seconds then go to login
           setTimeout(() => {
             this.goToLogin()
           }, 2000)
           
         } else {
-          // Handle error from backend
           this.message = data.message || 'Signup failed. Please try again.'
           this.messageType = 'error'
           console.error('Signup failed:', data.message)
@@ -223,19 +214,15 @@ export default {
       } catch (error) {
         console.error('❌ Signup error:', error)
         
-        // Handle different types of errors
         if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-          // GraphQL errors from Hasura
           const gqlError = error.graphQLErrors[0]
           this.message = `❌ ${gqlError.message || 'GraphQL error occurred'}`
           
-          // Check if it's an Action execution error
           if (gqlError.extensions && gqlError.extensions.code === 'action-execution-error') {
             this.message = '❌ Authentication service is not responding. Please check backend server.'
           }
           
         } else if (error.networkError) {
-          // Network errors
           console.error('Network error details:', error.networkError)
           
           if (error.networkError.message.includes('Failed to fetch')) {
@@ -247,7 +234,6 @@ export default {
             this.message = `❌ Network error: ${error.networkError.message}`
           }
         } else {
-          // Other errors
           this.message = `❌ Error: ${error.message || 'Unknown error occurred'}`
         }
         
@@ -260,12 +246,11 @@ export default {
     goToLogin() {
       console.log('Navigating to login page...')
       
-      // Clear any auth data before going to login
+      
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       
-      // Navigate to login page
-      // Use $router if available, otherwise fallback to window.location
+      
       if (this.$router) {
         this.$router.push('/login')
       } else {
@@ -283,7 +268,6 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  /* Match recipes page background */
   background: #f8fafc;
   display: flex;
   align-items: center;
@@ -308,7 +292,6 @@ export default {
 .logo {
   width: 80px;
   height: 80px;
-  /* use recipes primary red accents to match theme */
   background: linear-gradient(135deg, #FF6B6B, #e85a5a);
   border-radius: 50%;
   display: flex;
@@ -322,7 +305,7 @@ export default {
 }
 
 .app-name {
-  color: #FF6B6B; /* match Vuetify primary */
+  color: #FF6B6B; 
   font-size: 32px;
   font-weight: bold;
   margin-bottom: 8px;
@@ -339,19 +322,16 @@ export default {
   font-size: 16px;
 }
 
-/* Make primary buttons match recipes primary color */
 .signup-card .v-btn--is-elevated.v-btn--large,
 .signup-card .v-btn.primary {
   background-color: #FF6B6B !important;
   color: white !important;
 }
 
-/* Alert styling for multi-line messages */
 .v-alert {
   white-space: pre-line;
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .signup-card {
     padding: 24px;
